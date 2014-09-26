@@ -1,5 +1,5 @@
 .app-header {
-
+	margin-top: 15px;
 }
 
 .app-main {
@@ -7,9 +7,29 @@
 	overflow: hidden;
 }
 
+.app-map {
+	max-width: 100%;
+	max-height: 800px;
+	overflow: hidden;
+	margin-top: 10px;
+}
+.app-list-container{
+	max-height: 600px;
+	overflow: auto;
+}
+
+.app-list-container ul li:hover {
+	cursor: pointer;
+	background: #a5caff;
+}
+
 .app-map .overlay-map {
 	position: relative;
 	overflow: hidden;
+}
+
+.mousedown {
+	cursor: move;
 }
 
 .app-map .overlay-map img {
@@ -20,15 +40,64 @@
 .app-map .overlay-map .overlay {
 	position: relative;
 	z-index: 99;
-	border-left: solid 1px red;
-	border-bottom: solid 1px red;
+}
 
+.overlay-grid {
+	border-top-width: 1px;
+	border-top-style: solid;
+	border-right-width: 1px;
+	border-right-style: solid;
+	border-color: transparent;
+	-webkit-transition: border-color .5s ease-out;
+	-moz-transition: border-color .5s ease-out;
+}
+
+.overlay {
+	border-left-width: 1px;
+	border-left-style: solid;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-color: transparent;
+	-webkit-transition: border-color .5s ease-out;
+	-moz-transition: border-color .5s ease-out;
+}
+
+.overlay:hover, .overlay:hover .overlay-grid{
+	border-color: #a5caff;
+	-webkit-transition: border-color .5s ease-out;
+}
+
+
+.smooth-transition {
+	-webkit-transition: all .5s ease-out;
+	-moz-transition: all .5s ease-out;
 }
 
 .app-map .overlay-map .overlay .overlay-grid{
 	float: left;
 	box-sizing: border-box;
-	border-top: solid 1px red;
-	border-right: solid 1px red;
+}
 
+.overlay-grid {
+	background: rgba(165, 202, 255, 0.0);
+	-webkit-transition: background .15s ease-out;
+	-moz-transition: background .15s ease-out;
+}
+
+.overlay-grid.target {
+	background: rgba(255, 165, 192, 0.8);
+	-webkit-transition: background .15s ease-out;
+	-moz-transition: background .15s ease-out;
+}
+
+.overlay-grid:hover {
+	-webkit-transition: background .15s ease-out;
+	-moz-transition: background .15s ease-out;
+	background: rgba(165, 202, 255, 0.5);
+}
+
+.app-main .badge {
+	background-color: #aaa;
+	padding: 4px 10px;
+	font-weight: normal;
 }

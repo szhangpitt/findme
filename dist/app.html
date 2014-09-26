@@ -4,48 +4,102 @@
 	<link rel="stylesheet" href="assets/libs/bootstrap/css/bootstrap.css">
 	<link rel="stylesheet" href="assets/libs/bootstrap/css/bootstrap-theme.css">
 	<link rel="stylesheet" href="assets/styles/styles.css">
+	<!-- <link rel="shortcut icon" href="favicon.ico" /> -->
+	<link rel="icon" type="image/png" href="compass2.png" />
 </head>
 <body ng-controller="appController">
-	
+
+<!--[if IE]>
+	<h1>Sorry, IE 8 will not be supported.</h1> 
+	<h3>Please get <a href="https://support.google.com/installer/answer/126299?hl=en">Chrome</a>. </h3>
+<![endif]-->
+
+
 	<div class="app-header container-fluid">
 		<ul class="nav nav-pills">
 			<li class="active"><a href="#">Home</a></li>
-			<li><a href="#">Profile</a></li>
-			<li><a href="#">Messages</a></li>
+			<li><a href="#"  data-toggle="modal" data-target="#aboutModal">About</a></li>
 		</ul>
 	</div>
 
 	<div class="app-main container-fluid">
-		<form class="form-inline">
-			<div class="form-group">
-				<label for="my-name" class="sr-only">My name</label>
-				<input id="my-name" class="form-control" type="text" placeholder="My name">
+		<div class="row">
+			<div class="col-sm-4">
+				<form class="form-inline">					
+					<div class="form-group">
+						<label for="your-name" class="sr-only">Find Someone</label>
+						<input ng-model="search.$" id="your-name" class="form-control" type="text" placeholder="Name, RG, Seat Number...">
+					</div>
+					<!-- <div class="form-group">
+						<a class="btn btn-danger" ng-click="mapFilteredResults()">Map Results</a>
+					</div> -->
+					<div class="form-group">
+						<a class="btn btn-danger" ng-click="search = '';">Reset Search</a>
+					</div>
+				</form>
+				<div class="app-list-container">
+				<ul class="list-group">
+					<li class="list-group-item" ng-repeat="p in (filteredPersons = (allpersons | filter:search))" ng-class="{'active': p === selectedPerson}" ng-click="resetMap();locatePerson(p); $parent.selectedPerson = null; $parent.selectedPerson = p;" title="{{p.destination_desk}}" style="overflow: hidden">
+						<span class="pull-left">{{p.employee_name}}, {{p.destination_desk}}</span>
+						<span class="badge pull-right">{{p.tf_rg}}</span>
+					</li>
+				</ul>
+				</div>
 			</div>
-			<div class="form-group">
-				<label for="your-name" class="sr-only">Your name</label>
-				<input id="your-name" class="form-control" type="text" placeholder="Your name">
-			</div>
-		</form>
+			<div class="col-sm-8">
+				<div class="app-map">
+					
+					<span>Double click on map to zoom in, center block or zoom out. Drag map any time to pan. </span>
+					<a class="btn btn-default" ng-click="resetMap()">Reset Map</a>
+					<div class="overlay-map" style="height: {{zoomImage().height}}px" draggable-overlay-map>
+						<img src="assets/images/map.jpg" ng-class="{'smooth-transition' : turnOnSmoothTransition }"
+						style="left: {{offsetLeft}}px; top: {{offsetTop}}px; width: {{zoomImage().width}}px; height: {{zoomImage().height}}px; " image-on-load/>
+						<!--scale({{zoomImage().scale}}, {{zoomImage().scale}}); 
+						width="{{zoomImage().width}}" height="{{zoomImage().height}}" 
+						width: {{zoomImage().width}}; height: {{zoomImage().height}}; 
+						left: {{offsetLeft}}px; top: {{offsetTop}}px;
+						transform: translate({{offsetLeft}}px, {{offsetTop}}px); 
+					-->
+					<div class="overlay" ng-class="{'smooth-transition' : turnOnSmoothTransition }" style="position: relative; left: {{offsetLeft}}px; top: {{offsetTop}}px; width: {{zoomImage().width}}px; height: {{zoomImage().height}}px; margin-top: -{{zoomImage().height}}px">
 
-
-		<div class="app-map">
-			<input type="range" min="1" max="100" value="10" ng-model="mapZoomLevel">
-			<input type="range" min="1" max="100" value="10" ng-model="offsetLeft">
-			<input type="range" min="1" max="100" value="10" ng-model="offsetTop">
-			<div>{{mapZoomLevel}}</div>
-			<div class="overlay-map" style="height: {{zoomImage().height}}px">
-				<img src="assets/images/map.jpg" width="{{zoomImage().width}}" height="{{zoomImage().height}}" style="left: {{offsetLeft}}%" image-on-load/>
-				<div class="overlay" style="width: {{zoomImage().width}}; height: {{zoomImage().height}}; position: relative; top: -{{zoomImage().height}}px">
-					<div class="overlay-grid" ng-repeat="g in grids" style="width: {{g.width}}%; height: {{g.height}}%">{{g.id}}</div>
+						<div id="{{g.id}}" class="overlay-grid" ng-repeat="g in grids" ng-class="{'target': g.col === targetGrid.col && g.row === targetGrid.row}" style="width: {{g.width}}%; height: {{g.height}}%" ng-dblclick="clickToZoom(g)" click-to-zoom>
+							<!-- {{g.col}}, {{g.row}} -->
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
 
-	
-	<script src="assets/libs/angular/angular.js"></script>
-	<script src="assets/libs/jquery/jquery.js"></script>
-	<script src="assets/libs/bootstrap/js/bootstrap.js"></script>
-	<script src="assets/scripts/all-scripts.js"></script>
+
+	</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="myModalLabel">About Find me! App</h4>
+      </div>
+      <div class="modal-body">
+        <p>Developed by User Experience (a.k.a UID) group. </p>
+        <p>Special thanks to Marie-Pierre for floor plan and seat sheet! </p>
+        <p>Suggestions? Bugs? Contact <a href="mailto:shaopeng.zhang@siemens.com">Shaopeng Zhang</a>. </p>
+        <p class="text-right text-muted">Restricted. 2014/09</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">OK got it! </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script src="assets/libs/angular/angular.js"></script>
+<script src="assets/libs/jquery/jquery.js"></script>
+<script src="assets/libs/bootstrap/js/bootstrap.js"></script>
+<!--<script src="assets/scripts/all-scripts.js"></script>-->
+<script src="../components/scripts/app.js"></script>
 </body>
 </html>
