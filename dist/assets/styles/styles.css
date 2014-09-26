@@ -42,7 +42,7 @@
 	z-index: 99;
 }
 
-.overlay-grid {
+.overlay .overlay-grid {
 	border-top-width: 1px;
 	border-top-style: solid;
 	border-right-width: 1px;
@@ -62,9 +62,16 @@
 	-moz-transition: border-color .5s ease-out;
 }
 
-.overlay:hover, .overlay:hover .overlay-grid{
+.overlay:hover {
 	border-color: #a5caff;
 	-webkit-transition: border-color .5s ease-out;
+	-moz-transition: border-color .5s ease-out;
+}
+
+.overlay:hover .overlay-grid {
+	border-color: #a5caff;
+	-webkit-transition: border-color .5s ease-out;
+	-moz-transition: border-color .5s ease-out;
 }
 
 
