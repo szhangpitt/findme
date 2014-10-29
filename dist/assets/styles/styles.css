@@ -1,6 +1,23 @@
-.app-header {
-	margin-top: 15px;
+.navbar-default.siemens-brand{
+	background: #889ea7;
+	-webkit-border-radius: 0;
+	-moz-border-radius: 0;
+	border-radius: 0;
 }
+
+.navbar-default.siemens-brand a, 
+.navbar-default.siemens-brand .navbar-nav > li > a, 
+.navbar-default.siemens-brand .navbar-text {
+	color: #eee;
+}
+.navbar-default.siemens-brand .navbar-nav > li.active > a {
+	color: #666;
+}
+
+.app-find-input {
+	min-width: 230px;
+}
+
 
 .app-main {
 	margin-top: 15px;
@@ -14,13 +31,38 @@
 	margin-top: 10px;
 }
 .app-list-container{
+	margin-top: 15px;
 	max-height: 600px;
 	overflow: auto;
 }
 
 .app-list-container ul li:hover {
 	cursor: pointer;
-	background: #a5caff;
+	background: #d8dff0;
+}
+
+.app-list-container ul li .app-me {
+	display: none;
+	color: #3c763d;
+}
+
+.app-share {
+	display: none;
+}
+
+.app-list-container ul li.me .app-me {	
+	display: inline;
+}
+
+.app-list-container ul li.active:hover .app-me, 
+.app-list-container ul li.active:hover .app-share
+{
+	color: #fff;
+}
+
+.app-list-container ul li:hover .app-share, 
+.app-list-container ul li:hover .app-me {
+	display: inline;
 }
 
 .app-map .overlay-map {
@@ -38,18 +80,21 @@
 }
 
 .app-map .overlay-map .overlay {
+	overflow: hidden;
 	position: relative;
 	z-index: 99;
 }
 
-.overlay-grid {
+.overlay .overlay-grid {
 	border-top-width: 1px;
 	border-top-style: solid;
 	border-right-width: 1px;
 	border-right-style: solid;
+
 	border-color: transparent;
 	-webkit-transition: border-color .5s ease-out;
 	-moz-transition: border-color .5s ease-out;
+	transition: border-color .5s ease-out;
 }
 
 .overlay {
@@ -60,17 +105,30 @@
 	border-color: transparent;
 	-webkit-transition: border-color .5s ease-out;
 	-moz-transition: border-color .5s ease-out;
+	transition: border-color .5s ease-out;
 }
 
-.overlay:hover, .overlay:hover .overlay-grid{
-	border-color: #a5caff;
-	-webkit-transition: border-color .5s ease-out;
+.overlay:hover, 
+.overlay:hover .overlay-grid {
+	border-color: transparent;/*#a5caff;*/
+	-webkit-transition: border-color .5s ease-out 0s;
+	-moz-transition: border-color .5s ease-out 0s;
+	transition: border-color .5s ease-out 0s;
 }
 
+.overlay .overlay-grid.has-person {
+	/*background-color: rgba(240,173,78, 0.0);*/
+}
+
+.overlay:hover .overlay-grid.has-person {
+	/*background-color: rgba(240,173,78, 0.5);*/
+
+}
 
 .smooth-transition {
 	-webkit-transition: all .5s ease-out;
 	-moz-transition: all .5s ease-out;
+	transition: all .5s ease-out;
 }
 
 .app-map .overlay-map .overlay .overlay-grid{
@@ -79,25 +137,62 @@
 }
 
 .overlay-grid {
+	width: 3.571428571428571%;
+	height: 5%;
 	background: rgba(165, 202, 255, 0.0);
-	-webkit-transition: background .15s ease-out;
+	/*-webkit-transition: background .15s ease-out;
 	-moz-transition: background .15s ease-out;
+	transition: background .15s ease-out;*/
 }
 
-.overlay-grid.target {
-	background: rgba(255, 165, 192, 0.8);
-	-webkit-transition: background .15s ease-out;
-	-moz-transition: background .15s ease-out;
+.app-map .overlay-map .overlay .overlay-grid.hint {
+	background-color: rgba(53, 126, 189, 0.9);
 }
 
-.overlay-grid:hover {
+.app-map .overlay-map .overlay .overlay-grid.target {
+	background: rgba(53, 126, 189, 0.5);
+}
+
+.app-map .overlay-map .overlay .overlay-grid.pin {
+	background: rgba(178, 219, 161, 0.8);
+}
+
+.app-map .overlay-map .overlay .overlay-grid.hint, 
+.app-map .overlay-map .overlay .overlay-grid.target, 
+.app-map .overlay-map .overlay .overlay-grid.pin {
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(GradientType=1, StartColorStr='#CCB2DBA1', EndColorStr='#CCB2DBA1')";
+	filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=1, StartColorStr='#CCB2DBA1', EndColorStr='#CCB2DBA1');
+	zoom: 1!important;
 	-webkit-transition: background .15s ease-out;
 	-moz-transition: background .15s ease-out;
-	background: rgba(165, 202, 255, 0.5);
+	transition: background .15s ease-out;
+}
+
+.app-map .overlay-map .overlay .overlay-grid.pin.target {
+	background: rgba(178, 219, 161, 0.8);
+	border: solid 1px red;/*
+	-webkit-transition: background .15s ease-out;
+	-moz-transition: background .15s ease-out;
+	transition: background .15s ease-out;*/
+}
+
+.app-map .overlay-map .overlay .overlay-grid:hover {
+	-webkit-transition: background-color .15s ease-out;
+	-moz-transition: background-color .15s ease-out;
+	transition: background-color .15s ease-out;
+	background-color: rgba(165, 202, 255, 0.5);
 }
 
 .app-main .badge {
 	background-color: #aaa;
 	padding: 4px 10px;
 	font-weight: normal;
+}
+
+.tooltip {
+	font-size: 1.2em;
+}
+
+.popover img {
+	max-width: 100%;
 }

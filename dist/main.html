@@ -1,0 +1,143 @@
+<div ng-controller="appController">
+	 <!--[if lte IE 9]>
+        <div class="alert alert-info" role="alert" ng-init="showIE8tips = true;" ng-show="showIE8tips">
+          <h1>Are you using IE 8? </h1>
+          <p>First of all, IE 10 is rolling out and once you install it, everything will be working well. You can install IE10 from <strong>Control Panel</strong> -> <strong>Run Advertised Programs</strong>  -> Select <strong>"Internet Explorer 10.0"</strong> and click <strong>Run</strong>. </p>
+          <br>
+          <p>If you still plan to use IE8, you need to do a simple two-step configuration. Here's how: </p>
+          <p>1. With IE 8 running, press <strong>F12</strong> on keyboard. A new window called "Developer Tools" will pop up. </p>
+          <p>2. Check the menu bar of the window: File, Find, ...The last two are <strong>Browser Mode</strong> and <strong>Document Mode</strong> <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;Click <strong>Browser Mode</strong> and select <strong>"Internet Explorer 8"</strong> option. (NOT Internet Explorer 8 Compatibility View) <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;Click <strong>Document Mode</strong> and select <strong>"Internet Explorer 8"</strong> option. <br>
+            You should be good to go now. Close the Developer Tools window and try typing someone's name in the Search Text Input. Click someone's name to locate him/her on the map.
+          </p>
+          <br>
+          <a class="btn btn-primary" ng-click="showIE8tips = false;">OK, it's working now! </a>
+          <a href="mailto:shaopeng.zhang@siemens.com" class="btn btn-default">I'm still having trouble. </a>
+        </div>
+        <![endif]-->
+
+        <div class="navbar navbar-default siemens-brand">
+        	<div class="container-fluid">
+        		<div class="row">
+        			<div class="col-sm-12">
+        				<div class="navbar-header">
+        					<a class="navbar-brand" href="#">CT Princeton Find Me!</a>
+        				</div>
+        				<p class="navbar-text pull-right" ng-show="selectedMe">Hello, {{selectedMe.employee_name}} <a href="#" ng-click="$event.preventDefault();selectedMe = null;pinGrid = null;">(Not you?) </a> </p>
+        				<p class="navbar-text pull-right" ng-hide="selectedMe"> Click on <span class="glyphicon glyphicon-pushpin"></span> next to your name to locate yourself. </p>
+
+        				<ul class="nav navbar-nav">
+        					<li class="active"><a href="#">Home</a></li>
+        					<li><a href="#"  data-toggle="modal" data-target="#aboutModal">About</a></li>
+        					<li><a href="mailto:?subject=This app helps you find people in this building" class="">Share</a></li>						
+        				</ul>
+        			</div>
+        		</div>
+        	</div>
+        </div>
+
+        <div class="app-main container-fluid">
+        	<div class="row">
+        		<div class="col-sm-4">
+        			<form class="form-inline">	
+
+        				<div class="form-group">
+        					<label for="my-name" class="sr-only">Find Someone</label>
+
+        					<input ng-model="search" id="your-name" class="form-control app-find-input" type="text" placeholder="Name, RG, Seat Number...">
+        				</div>
+
+        				<div class="form-group">
+        					<a href="#" class="btn btn-danger" ng-click="resetSearch()">Reset Search</a>
+        				</div>
+        			</form>
+        			<div class="app-list-container">
+        				<ul class="list-group">
+        					<li class="list-group-item" ng-repeat="p in (filteredPersons = (allpersons | filter:search))" ng-class="{'active': p === personToLocate, 'me': $parent.selectedMe === p}" ng-click="resetMap();locatePerson(p); " ng-mouseenter="hintPerson(p)" ng-mouseleave="endHintPerson()" style="overflow: hidden">
+        						<span class="pull-left" title="{{p.destination_desk}}">{{p.employee_name || p.room_name}}</span>
+        						&nbsp; &nbsp;
+        						<a class="app-me" title="Click if this is you" href="#/person/{{p.employee_name}}" time="Locate me" ng-click="$event.preventDefault(); locateMe(p); $event.stopPropagation();"><span class="glyphicon glyphicon-pushpin"></span></a> 
+        						<!-- {{p.room_name && "I'm here" || "This is me"}} -->
+        						&nbsp;&nbsp;
+        						<a class="app-share" title="Tell others where {{selectedMe === p && 'you are' || (p.employee_name || p.room_name + ' is') }}" href="mailto:?subject={{p.employee_name || p.room_name}} is here&body=http://localhost:8080/%23/{{p.employee_name && 'person' || 'room'}}/{{p.employee_name || p.room_name | replaceSpace}}"><span class="glyphicon glyphicon-envelope"></span> </a>
+
+        						<span class="badge pull-right">{{p.tf_rg}}</span>
+        					</li>
+        				</ul>
+        			</div>
+        		</div>
+        		<div class="col-sm-8">
+        			<!--[if !IE]><!-->  				
+        			<div class="app-map">
+
+        				<span>Double click on map to zoom in, center block or zoom out. Drag map any time to pan. </span>
+        				<a href="#" class="btn btn-default" ng-click="resetMap()">Reset Map</a>
+
+        				<div class="overlay-map" style="width: {{zoomImage().width}}px; height: {{zoomImage().height}}px" draggable-overlay-map>
+
+        					<img src="assets/images/map.jpg" width="{{zoomImage().width}}px" height="{{zoomImage().height}}px" ng-class="{'smooth-transition' : turnOnSmoothTransition }" ng-style="{'position': 'relative', 'left': offsetLeft + 'px', 'top': offsetTop + 'px', 'width': zoomImage().width + 'px', 'height': zoomImage().height + 'px'}" 
+        					image-on-load/>
+
+
+        					<div class="overlay" ng-class="{'smooth-transition' : turnOnSmoothTransition }" ng-style="{'position': 'relative', 'left': offsetLeft + 'px', 'top': offsetTop + 'px', 'width': zoomImage().width + 'px', 'height': zoomImage().height + 'px', 'margin-top': -zoomImage().height + 'px'}">
+
+
+        						<div id="{{g.id}}" style="width: {{g.width}}%; height: {{g.height}}%;" class="overlay-grid" ng-repeat="g in grids" title="{{g.persons}}"ng-class="{'target': g.col === targetGrid.col && g.row === targetGrid.row , 'hint': g.col === hintGrid.col && g.row === hintGrid.row , 'pin': g.col === pinGrid.col && g.row === pinGrid.row, 'has-person': g.persons}" ng-dblclick="clickToZoom(g)" show-person-tooltip show-waypoint-popover data-way-point="{{g.wayPoint.img}}" data-toggle="tooltip">
+        							<!-- {{g.col}}, {{g.row}} --> 
+        						</div>
+
+        					</div>
+        				</div>
+        			</div>
+
+        			<!--<![endif]-->
+<!--[if lte IE 9]>
+  				<div class="app-map">  					
+
+  					<div class="overlay-map" style="height: {{zoomImage().height}}px" >
+
+  						<img src="assets/images/map.jpg" width="{{zoomImage().width}}px" height="{{zoomImage().height}}px" ng-class="{'smooth-transition' : turnOnSmoothTransition }"
+  						style="left: {{offsetLeft}}px; top: {{offsetTop}}px; width: {{zoomImage().width}}px; height: {{zoomImage().height}}px; " image-on-load/>
+
+
+  						<div class="overlay" ng-class="{'smooth-transition' : turnOnSmoothTransition }" 
+  						ng-style="{'position': 'relative', 'left': offsetLeft, 'top': offsetTop, 'width': zoomImage().width, 'height': zoomImage().height, 'margin-top': -zoomImage().height}">
+
+
+	  						<div id="{{g.id}}" style="width: {{g.width}}%; height: {{g.height}}%;" class="overlay-grid" ng-repeat="g in grids" ng-class="{'target': g.col === targetGrid.col && g.row === targetGrid.row , 'pin': g.col === pinGrid.col && g.row === pinGrid.row}" ng-dblclick="clickToZoom(g)">
+	  							&nbsp;
+	  						</div>
+
+	  					</div>
+	  				</div>
+  				</div>
+
+  				<![endif]-->
+  			</div>
+
+
+  		</div>
+  	</div>
+
+  	<!-- Modal -->
+  	<div class="modal fade" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  		<div class="modal-dialog">
+  			<div class="modal-content">
+  				<div class="modal-header">
+  					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+  					<h4 class="modal-title" id="myModalLabel">About Find me! App</h4>
+  				</div>
+  				<div class="modal-body">
+  					<p>Brought to you by the Product and System Design group. </p>
+  					<p>Special thanks to Marie-Pierre for floor plan and seat sheet! </p>
+  					<p>Suggestions? Bugs? Contact <a href="mailto:shaopeng.zhang@siemens.com">Shaopeng Zhang</a>. </p>
+  					<p class="text-right text-muted">Restricted. 2014/09</p>
+  				</div>
+  				<div class="modal-footer">
+  					<button type="button" class="btn btn-primary" data-dismiss="modal">OK got it! </button>
+  				</div>
+  			</div>
+  		</div>
+  	</div>
+  </div>
