@@ -1,3 +1,7 @@
+.top-margin {
+	margin-top: 15px;
+}
+
 .navbar-default.siemens-brand{
 	background: #889ea7;
 	-webkit-border-radius: 0;
@@ -38,7 +42,7 @@
 }
 .app-list-container {
 	margin-top: 15px;
-	max-height: 600px;
+	max-height: 300px;
 	overflow: auto;
 }
 

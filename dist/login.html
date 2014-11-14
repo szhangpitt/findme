@@ -14,10 +14,7 @@
         				<ul class="nav navbar-nav">
         					<li class="active"><a href="#">Home</a></li>
         					<!-- <li><a href="#"  data-toggle="modal" data-target="#aboutModal">About</a></li> -->
-        					<li><a href="mailto:?subject=This app helps you find people in this building" class="">Share</a></li>	
-                  <li class="pull-right">
-                    <a href="#/login">Hi, {{selectedMe.employee_name}}</a>
-                  </li>					
+        					<li><a href="mailto:?subject=This app helps you find people in this building" class="">Share</a></li>						
         				</ul>
         			</div>
         		</div>
@@ -30,7 +27,7 @@
         			<form class="form-inline">	
 
                 <div class="input-group form-search">
-                  <input type="text" ng-model="search" id="your-name"  class="form-control search-query" placeholder="Name, RG, Seat Number...">
+                  <input type="text" ng-model="search" id="your-name"  class="form-control search-query" placeholder="Locate yourself">
                   <span class="input-group-btn">
                     <button type="submit" class="btn btn-danger" data-type="last" ng-click="resetSearch()">Clear</button>
                   </span>
@@ -39,20 +36,25 @@
         			</form>
         			<div class="app-list-container">
         				<ul class="list-group">
-                  <!-- ng-click="resetMap();locatePerson(p); " -->
-        					<a class="list-group-item" ng-repeat="p in (filteredPersons = (allpersons | filter:search))" ng-class="{'active': p === personToLocate, 'me': $parent.selectedMe === p}" ng-href="#/location/{{p.employee_name || p.room_name}}"  ng-mouseenter="hintPerson(p)" ng-mouseleave="endHintPerson()" style="overflow: hidden">
+                  <!-- " -->
+        					<li class="list-group-item" ng-repeat="p in (filteredPersons = (allpersons | filter:search))" ng-class="{'active': p === personToLocate, 'me': $parent.selectedMe === p}" ng-href="#/person/{{p.employee_name || p.room_name}}" ng-click="locateMe(p);"  ng-mouseenter="hintPerson(p)" ng-mouseleave="endHintPerson()" style="overflow: hidden">
         						<span class="pull-left" title="{{p.destination_desk}}">{{p.employee_name || p.room_name}}</span>
         						&nbsp; &nbsp;
-        					
+        						<!-- <a class="app-me" title="Click if this is you" href="#/person/{{p.employee_name}}" time="Locate me" ng-click="$event.preventDefault(); locateMe(p); $event.stopPropagation();"><span class="glyphicon glyphicon-pushpin"></span></a>  -->
+        						<!-- {{p.room_name && "I'm here" || "This is me"}} -->
         						&nbsp;&nbsp;
         						<!-- <a class="app-share" title="Tell others where {{selectedMe === p && 'you are' || (p.employee_name || p.room_name + ' is') }}" href="mailto:?subject={{p.employee_name || p.room_name}} is here&body=http://localhost:8080/%23/{{p.employee_name && 'person' || 'room'}}/{{p.employee_name || p.room_name | replaceSpace}}"><span class="glyphicon glyphicon-envelope"></span> </a> -->
 
         						<span class="badge pull-right">{{p.tf_rg}}</span>
-        					</a>
+        					</li>
         				</ul>
         			</div>
         		</div>
-        		<div class="col-sm-8">
+        		<div class="col-sm-12">
+            
+            <p class="alert alert-success">{{selectedMe.employee_name && "Hello," || "" }} {{selectedMe.employee_name}}</p>
+
+            <a href="#" class="btn btn-primary btn-block" ng-class="{'disabled': !selectedMe || !selectedMe.employee_name}">Start</a>
 
   			</div>
 

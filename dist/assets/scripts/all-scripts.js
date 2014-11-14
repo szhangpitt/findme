@@ -2,11 +2,14 @@ var appModule = angular.module('findmeapp', ['ngRoute']);
 
 appModule.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
 	$routeProvider
+	.when('/location/:personName', {
+		templateUrl: '/map.html'
+	})
+	.when('/login', {
+		templateUrl: '/login.html'
+	})
 	.when('/', {
 		templateUrl: '/main.html'
-	})
-	.when('/person/:personName', {
-		templateUrl: '/map.html'
 	})
 	.otherwise({ redirectTo: '/' });
 
@@ -45,12 +48,14 @@ appModule.controller('appController', ['$scope', 'peopleService', 'wayPointsServ
 		});
 
 		$rootScope.$on('allpersons-data-ready', function(event, data) {
-			console.log(data); 
+			// console.log(data); 
 			$scope.allpersons = data;
+
 			$scope.grids = generateGrids(data, $scope.wayPoints); 
 			
 			if(supports_html5_storage()) {
 				$scope.locateMe(angular.fromJson(localStorage.getItem('me')));
+				console.log('get me: ' + angular.toJson(localStorage.getItem('me')));
 			}
 			
 			if($routeParams.personName) {
@@ -61,7 +66,7 @@ appModule.controller('appController', ['$scope', 'peopleService', 'wayPointsServ
 				$scope.search = $routeParams.personName;
 				
 				var person = _.find(data, function(p) {
-					return p.employee_name === $routeParams.personName;
+					return p.employee_name === $routeParams.personName || p.room_name === $routeParams.personName;
 				});
 
 				$scope.locatePerson(person);
@@ -109,6 +114,7 @@ appModule.controller('appController', ['$scope', 'peopleService', 'wayPointsServ
 		}
 
 		$scope.zoomInOut = function(direction)  {
+			$scope.turnOnSmoothTransition = true;
 			if($scope.targetGrid) {
 				$scope.mapZoomLevel = cycleZoomLevel(direction > 0);
 				$scope.offsetLeft = (0 - $scope.targetGrid.col * $scope.targetGrid.width) / 100 * $scope.zoomImage().width + VIEWPORT_ZOOM_OFFSET;
@@ -185,6 +191,7 @@ appModule.controller('appController', ['$scope', 'peopleService', 'wayPointsServ
 			$scope.selectedMe = personObject;
 			if (supports_html5_storage()) {
 				localStorage.setItem('me', angular.toJson(personObject));
+				console.log('set me: ' + angular.toJson(personObject));
 			}
 		}
 	}
@@ -264,7 +271,7 @@ appModule.controller('appController', ['$scope', 'peopleService', 'wayPointsServ
 				var ho = holder[j + '-' + i] || {};
 				var wayPoint = wayPointsHolder[j + '-' + i] || {};
 				if(j == 8 && i == 10){
-					console.log('wayPoint: ', wayPoint)
+					// console.log('wayPoint: ', wayPoint)
 				}
 				var grid = {
 					id: 'grid-' + j + '-' + i, 
@@ -320,7 +327,7 @@ appModule.directive('showPersonTooltip', [function () {
 			scope.$watch(attrs, function() {
 				if(attrs.title) {					
 					$(element).tooltip({html: true, placement: 'top', container: 'body'});
-					console.log('showPersonTooltip: ' + attrs.title);	
+					// console.log('showPersonTooltip: ' + attrs.title);	
 				}
 				
 			});
