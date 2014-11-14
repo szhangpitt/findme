@@ -24,20 +24,21 @@
         <div class="app-main container-fluid">
         	<div class="row">
         		<div class="col-sm-12">
-        			<form class="form-inline">	
+        			<!-- <form class="form-inline">	
 
-                <div class="input-group form-search">
-                  <input type="text" ng-model="search" id="your-name"  class="form-control search-query" placeholder="Name, RG, Seat Number...">
-                  <span class="input-group-btn">
-                    <button type="submit" class="btn btn-danger" data-type="last" ng-click="resetSearch()">Clear</button>
-                  </span>
-                </div>
+        				<div class="form-group">
+        					<label for="my-name" class="sr-only">Find Someone</label>
 
-        			</form>
+        					<input ng-model="search" id="your-name" class="form-control app-find-input" type="text" placeholder="Name, RG, Seat Number...">
+        				</div>
+
+        				<div class="form-group">
+        					<a href="#" class="btn btn-danger" ng-click="resetSearch()">Reset Search</a>
+        				</div>
+        			</form> -->
         			<div class="app-list-container">
         				<ul class="list-group">
-                  <!-- ng-click="resetMap();locatePerson(p); " -->
-        					<a class="list-group-item" ng-repeat="p in (filteredPersons = (allpersons | filter:search))" ng-class="{'active': p === personToLocate, 'me': $parent.selectedMe === p}" ng-href="#/person/{{p.employee_name}}"  ng-mouseenter="hintPerson(p)" ng-mouseleave="endHintPerson()" style="overflow: hidden">
+        					<a class="list-group-item" ng-repeat="p in (filteredPersons = (allpersons | filter:search))" ng-class="{'active': p === personToLocate, 'me': $parent.selectedMe === p}" ng-href="#/person/{{p.employee_name}}" ng-click="resetMap();locatePerson(p); " ng-mouseenter="hintPerson(p)" ng-mouseleave="endHintPerson()" style="overflow: hidden">
         						<span class="pull-left" title="{{p.destination_desk}}">{{p.employee_name || p.room_name}}</span>
         						&nbsp; &nbsp;
         						<!-- <a class="app-me" title="Click if this is you" href="#/person/{{p.employee_name}}" time="Locate me" ng-click="$event.preventDefault(); locateMe(p); $event.stopPropagation();"><span class="glyphicon glyphicon-pushpin"></span></a>  -->
@@ -50,11 +51,36 @@
         				</ul>
         			</div>
         		</div>
-        		<!-- <div class="col-sm-8">
-        
+        		<div class="col-sm-12">
+        			<!--[if !IE]><!-->  				
+        			<div class="app-map">
+
+        				<div class="overlay-map" style="width: {{zoomImage().width}}px; height: {{zoomImage().height}}px" draggable-overlay-map>
+
+        					<img src="assets/images/map.jpg" width="{{zoomImage().width}}px" height="{{zoomImage().height}}px" ng-class="{'smooth-transition' : turnOnSmoothTransition }" ng-style="{'position': 'relative', 'left': offsetLeft + 'px', 'top': offsetTop + 'px', 'width': zoomImage().width + 'px', 'height': zoomImage().height + 'px'}" 
+        					image-on-load/>
+
+
+        					<div class="overlay" ng-class="{'smooth-transition' : turnOnSmoothTransition }" ng-style="{'position': 'relative', 'left': offsetLeft + 'px', 'top': offsetTop + 'px', 'width': zoomImage().width + 'px', 'height': zoomImage().height + 'px', 'margin-top': -zoomImage().height + 'px'}">
+
+
+        						<div id="{{g.id}}" style="width: {{g.width}}%; height: {{g.height}}%;" class="overlay-grid" ng-repeat="g in grids" title="{{g.persons}}"ng-class="{'target': g.col === targetGrid.col && g.row === targetGrid.row , 'hint': g.col === hintGrid.col && g.row === hintGrid.row , 'pin': g.col === pinGrid.col && g.row === pinGrid.row, 'has-person': g.persons}" ng-dblclick="clickToZoom(g)" show-person-tooltip show-waypoint-popover data-way-point="{{g.wayPoint.img}}" data-toggle="tooltip">
+        							<!-- {{g.col}}, {{g.row}} --> 
+        						</div>
+
+        					</div>
+        				</div>
+        			</div>
+
+<button type="button" class="btn btn-default" ng-click="zoomInOut(1)">Zoom in</button>
+<button type="button" class="btn btn-default" ng-click="zoomInOut(-1)">Zoom out</button>
+<button type="button" class="btn btn-default" ng-click="checkInTargetGrid()">Check in</button>
+<button type="button" class="btn btn-default" ng-click="checkInTargetGrid()">Follow {{personToLocate.employee_name}}</button>
+<button type="button" class="btn btn-default" ng-click="resetMap()">Reset Map</button>
+        			<!--<![endif]-->
 
   			</div>
- -->
+
 
   		</div>
   	</div>

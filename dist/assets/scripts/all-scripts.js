@@ -6,7 +6,7 @@ appModule.config(['$routeProvider', '$locationProvider', function($routeProvider
 		templateUrl: '/main.html'
 	})
 	.when('/person/:personName', {
-		templateUrl: '/main.html'
+		templateUrl: '/map.html'
 	})
 	.otherwise({ redirectTo: '/' });
 
@@ -17,8 +17,13 @@ appModule.controller('appController', ['$scope', 'peopleService', 'wayPointsServ
 	function ($scope, peopleService, wayPointsService, $rootScope, $routeParams, $location) {
 		var zoomedOnGrid = null;
 
+		var zoomLevels = {
+			levels: [6, 12, 24, 36, 48],
+			currentLevelIndex: 0
+		}
+
 		var VIEWPORT_ZOOM_OFFSET = 100, 
-		ZOOMED_IN_LEVEL = 60, DEFAULT_MAP_ZOOM_LEVEL = 6;
+		ZOOMED_IN_LEVEL = 40, DEFAULT_MAP_ZOOM_LEVEL = 6;
 
 		$scope.mapZoomLevel = DEFAULT_MAP_ZOOM_LEVEL;
 
@@ -92,12 +97,34 @@ appModule.controller('appController', ['$scope', 'peopleService', 'wayPointsServ
 			};
 		};
 
-		$scope.clickToZoom = function(gridObject) {
+
+		function cycleZoomLevel(isZoomingIn) {
+			var diff = isZoomingIn ? 1 : -1;
+			zoomLevels.currentLevelIndex = (zoomLevels.currentLevelIndex + diff);
+			zoomLevels.currentLevelIndex = Math.min(zoomLevels.levels.length - 1, zoomLevels.currentLevelIndex);
+			zoomLevels.currentLevelIndex = Math.max(0, zoomLevels.currentLevelIndex);
+
+			console.log('cycleZoomLevel: ' + zoomLevels.levels[zoomLevels.currentLevelIndex]);
+			return zoomLevels.levels[zoomLevels.currentLevelIndex] || DEFAULT_MAP_ZOOM_LEVEL;		
+		}
+
+		$scope.zoomInOut = function(direction)  {
+			if($scope.targetGrid) {
+				$scope.mapZoomLevel = cycleZoomLevel(direction > 0);
+				$scope.offsetLeft = (0 - $scope.targetGrid.col * $scope.targetGrid.width) / 100 * $scope.zoomImage().width + VIEWPORT_ZOOM_OFFSET;
+				$scope.offsetTop = (0 - $scope.targetGrid.row * $scope.targetGrid.height) / 100 * $scope.zoomImage().height + VIEWPORT_ZOOM_OFFSET;
+				
+			}
+		}
+
+		$scope.clickToZoom = function(gridObject, isZoomingIn) {
 			$scope.turnOnSmoothTransition = true;
 
 			if(gridObject !== zoomedOnGrid || $scope.mapZoomLevel !== ZOOMED_IN_LEVEL) {
 				console.log(gridObject);
+									
 				$scope.mapZoomLevel = ZOOMED_IN_LEVEL;
+				
 				$scope.offsetLeft = (0 - gridObject.col * gridObject.width) / 100 * $scope.zoomImage().width + VIEWPORT_ZOOM_OFFSET;
 				$scope.offsetTop = (0 - gridObject.row * gridObject.height) / 100 * $scope.zoomImage().height + VIEWPORT_ZOOM_OFFSET;
 				zoomedOnGrid = gridObject;	
@@ -112,10 +139,33 @@ appModule.controller('appController', ['$scope', 'peopleService', 'wayPointsServ
 		//highlight all filtered persons in the list...
 	}
 
+	function getGridFromPerson(personObject) {
+		var col = personObject.col, 
+			row = personObject.row, 
+			len = $scope.grids.length;
+
+		for (var i = 0; i < len; i++) {
+			if (col === $scope.grids[i].col && row === $scope.grids[i].row) {
+				return $scope.grids[i];
+			}
+		}
+
+		return null;
+	}
+
 	$scope.locatePerson = function(personObject) {
 		if(personObject.col && personObject.row) {
 			$scope.personToLocate = personObject;
-			$scope.targetGrid = {col: personObject.col, row: personObject.row};
+			// $scope.targetGrid = {col: personObject.col, row: personObject.row};
+			$scope.targetGrid = getGridFromPerson(personObject);
+		}
+	}
+
+	$scope.checkInTargetGrid = function() {
+		if($scope.targetGrid) {
+			//get current user
+			//get grid
+			//let service send Ajax
 		}
 	}
 
@@ -161,6 +211,8 @@ appModule.controller('appController', ['$scope', 'peopleService', 'wayPointsServ
 		$scope.offsetLeft = 0;
 		$scope.offsetTop = 0;
 	}
+
+
 
 	function generateGrids(allPersonsData, wayPointsData, cols, rows) {
 
