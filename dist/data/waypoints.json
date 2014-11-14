@@ -1,0 +1,23 @@
+[
+  {
+    "img":"2f_elevator.jpg", 
+    "type": "waypoint",
+    "floor": 2, 
+    "col": 9, 
+    "row": 12
+  },
+  {
+    "img":"2f_mpr.jpg", 
+    "type": "waypoint",
+    "floor": 2, 
+    "col": 11, 
+    "row": 14
+  },
+  {
+    "img":"2f_glasswall.jpg", 
+    "type": "waypoint",
+    "floor": 2, 
+    "col": 8, 
+    "row": 10
+  }
+]

@@ -134,7 +134,7 @@ appModule.controller('appController', ['$scope', 'peopleService', 'wayPointsServ
 	}
 
 	$scope.locateMe = function(personObject) {
-		if(personObject.col && personObject.row /*&& personObject.employee_name*/) {
+		if(personObj && personObject.col && personObject.row /*&& personObject.employee_name*/) {
 			$scope.pinGrid = {col: personObject.col, row: personObject.row};
 			$scope.selectedMe = personObject;
 			if (supports_html5_storage()) {
