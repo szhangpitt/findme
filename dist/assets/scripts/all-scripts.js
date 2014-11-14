@@ -15,27 +15,23 @@ appModule.config(['$routeProvider', '$locationProvider', function($routeProvider
 
 appModule.controller('appController', ['$scope', 'peopleService', 'wayPointsService', '$rootScope', '$routeParams', '$location', 
 	function ($scope, peopleService, wayPointsService, $rootScope, $routeParams, $location) {
+		var zoomedOnGrid = null;
+
+		var VIEWPORT_ZOOM_OFFSET = 100, 
+		ZOOMED_IN_LEVEL = 60, DEFAULT_MAP_ZOOM_LEVEL = 6;
+
+		$scope.mapZoomLevel = DEFAULT_MAP_ZOOM_LEVEL;
+
+		$scope.IMG_WIDTH = 6300;
+		$scope.IMG_HEIGHT = 4500;
 		
-		$scope.mapZoomLevel = 12;
+
 		$scope.offsetLeft = 0;
 		$scope.offsetTop = 0;
 
 		$scope.turnOnSmoothTransition = false;
 
-
-
 		wayPointsService.take();
-		
-
-		var zoomedOnGrid = null;
-
-		var VIEWPORT_ZOOM_OFFSET = 200, 
-		ZOOMED_IN_LEVEL = 60;
-
-		$scope.IMG_WIDTH = 6300;
-		$scope.IMG_HEIGHT = 4500;
-
-
 
 		$rootScope.$on('image-loaded', function(event, data) {
 			console.log(data); 
@@ -65,7 +61,7 @@ appModule.controller('appController', ['$scope', 'peopleService', 'wayPointsServ
 
 				$scope.locatePerson(person);
 
-				$scope.$apply();
+				// /$scope.$apply();
 			}
 
 		});
@@ -134,7 +130,7 @@ appModule.controller('appController', ['$scope', 'peopleService', 'wayPointsServ
 	}
 
 	$scope.locateMe = function(personObject) {
-		if(personObj && personObject.col && personObject.row /*&& personObject.employee_name*/) {
+		if(personObject && personObject.col && personObject.row /*&& personObject.employee_name*/) {
 			$scope.pinGrid = {col: personObject.col, row: personObject.row};
 			$scope.selectedMe = personObject;
 			if (supports_html5_storage()) {
@@ -161,7 +157,7 @@ appModule.controller('appController', ['$scope', 'peopleService', 'wayPointsServ
 
 	$scope.resetMap = function() {
 		// $scope.search = '';
-		$scope.mapZoomLevel = 12;
+		$scope.mapZoomLevel = DEFAULT_MAP_ZOOM_LEVEL;
 		$scope.offsetLeft = 0;
 		$scope.offsetTop = 0;
 	}
@@ -272,7 +268,7 @@ appModule.directive('showPersonTooltip', [function () {
 			scope.$watch(attrs, function() {
 				if(attrs.title) {					
 					$(element).tooltip({html: true, placement: 'top', container: 'body'});
-					console.log(attrs.title);	
+					console.log('showPersonTooltip: ' + attrs.title);	
 				}
 				
 			});
@@ -377,7 +373,7 @@ appModule.service('wayPointsService', ['jsonDataSrv', '$rootScope', function (js
 
 	this.take = function() {
 		if (that.allWayPoints) {
-			$rootScope.$broadcast('waypoints-data-ready', data);
+			$rootScope.$broadcast('waypoints-data-ready', that.allWayPoints);
 		}
 		else {
 			jsonDataSrv.async('data/waypoints.json')

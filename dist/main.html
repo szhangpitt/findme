@@ -22,10 +22,10 @@
         		<div class="row">
         			<div class="col-sm-12">
         				<div class="navbar-header">
-        					<a class="navbar-brand" href="#">CT Princeton Find Me!</a>
+        					<!-- <a class="navbar-brand" href="#">CT Princeton Find Me!</a> -->
         				</div>
-        				<p class="navbar-text pull-right" ng-show="selectedMe">Hello, {{selectedMe.employee_name}} <a href="#" ng-click="$event.preventDefault();selectedMe = null;pinGrid = null;">(Not you?) </a> </p>
-        				<p class="navbar-text pull-right" ng-hide="selectedMe"> Click on <span class="glyphicon glyphicon-pushpin"></span> next to your name to locate yourself. </p>
+        				<!-- <p class="navbar-text pull-right" ng-show="selectedMe">Hello, {{selectedMe.employee_name}} <a href="#" ng-click="$event.preventDefault();selectedMe = null;pinGrid = null;">(Not you?) </a> </p> -->
+        				<!-- <p class="navbar-text pull-right" ng-hide="selectedMe"> Click on <span class="glyphicon glyphicon-pushpin"></span> next to your name to locate yourself. </p> -->
 
         				<ul class="nav navbar-nav">
         					<li class="active"><a href="#">Home</a></li>
@@ -54,16 +54,16 @@
         			</form>
         			<div class="app-list-container">
         				<ul class="list-group">
-        					<li class="list-group-item" ng-repeat="p in (filteredPersons = (allpersons | filter:search))" ng-class="{'active': p === personToLocate, 'me': $parent.selectedMe === p}" ng-click="resetMap();locatePerson(p); " ng-mouseenter="hintPerson(p)" ng-mouseleave="endHintPerson()" style="overflow: hidden">
+        					<a class="list-group-item" ng-repeat="p in (filteredPersons = (allpersons | filter:search))" ng-class="{'active': p === personToLocate, 'me': $parent.selectedMe === p}" ng-href="#/person/{{p.employee_name}}" ng-click="resetMap();locatePerson(p); " ng-mouseenter="hintPerson(p)" ng-mouseleave="endHintPerson()" style="overflow: hidden">
         						<span class="pull-left" title="{{p.destination_desk}}">{{p.employee_name || p.room_name}}</span>
         						&nbsp; &nbsp;
-        						<a class="app-me" title="Click if this is you" href="#/person/{{p.employee_name}}" time="Locate me" ng-click="$event.preventDefault(); locateMe(p); $event.stopPropagation();"><span class="glyphicon glyphicon-pushpin"></span></a> 
+        						<!-- <a class="app-me" title="Click if this is you" href="#/person/{{p.employee_name}}" time="Locate me" ng-click="$event.preventDefault(); locateMe(p); $event.stopPropagation();"><span class="glyphicon glyphicon-pushpin"></span></a>  -->
         						<!-- {{p.room_name && "I'm here" || "This is me"}} -->
         						&nbsp;&nbsp;
-        						<a class="app-share" title="Tell others where {{selectedMe === p && 'you are' || (p.employee_name || p.room_name + ' is') }}" href="mailto:?subject={{p.employee_name || p.room_name}} is here&body=http://localhost:8080/%23/{{p.employee_name && 'person' || 'room'}}/{{p.employee_name || p.room_name | replaceSpace}}"><span class="glyphicon glyphicon-envelope"></span> </a>
+        						<!-- <a class="app-share" title="Tell others where {{selectedMe === p && 'you are' || (p.employee_name || p.room_name + ' is') }}" href="mailto:?subject={{p.employee_name || p.room_name}} is here&body=http://localhost:8080/%23/{{p.employee_name && 'person' || 'room'}}/{{p.employee_name || p.room_name | replaceSpace}}"><span class="glyphicon glyphicon-envelope"></span> </a> -->
 
         						<span class="badge pull-right">{{p.tf_rg}}</span>
-        					</li>
+        					</a>
         				</ul>
         			</div>
         		</div>
@@ -71,7 +71,7 @@
         			<!--[if !IE]><!-->  				
         			<div class="app-map">
 
-        				<span>Double click on map to zoom in, center block or zoom out. Drag map any time to pan. </span>
+        				<!-- <span>Double click on map to zoom in, center block or zoom out. Drag map any time to pan. </span> -->
         				<a href="#" class="btn btn-default" ng-click="resetMap()">Reset Map</a>
 
         				<div class="overlay-map" style="width: {{zoomImage().width}}px; height: {{zoomImage().height}}px" draggable-overlay-map>
